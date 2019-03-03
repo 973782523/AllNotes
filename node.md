@@ -135,6 +135,8 @@ node中内置的模块
 
 [中文文档](https://www.zybuluo.com/bajian/note/444152)
 
+express跟穿串一样，一遍过 
+
 ```js
 //express   body-parser
 //server.js
@@ -364,3 +366,23 @@ cosnt render=Swig(options);
 -----
 
 ```
+### koa-generator
+
+安装` yarn global add koa-generator`
+
+创建项目
+
+>  koa2 项目名
+
+![1550328514099](node.assets/1550328514099.png)
+
+中间件经过两次,一进一出
+
+![1550765274491](node.assets/1550765274491.png)
+
+### nuxt(ssr)
+
+https://www.cnblogs.com/cckui/p/9964171.html
+
+
+

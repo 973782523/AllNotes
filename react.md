@@ -1,4 +1,7 @@
+###[webstrom自动格式化代码](https://segmentfault.com/q/1010000014002641?sort=created)
+
 命令
+
 ```json
 js框架 MVC
 安装
@@ -177,7 +180,7 @@ src->component 这个文件夹存放开发的组件
 
 create-element 在处理的时候,遇到一个组件,返回的对象中type就不再是字符串,而是一个函数(类),但是属性还是props中
 
-```
+```js
 ({
     type:Dialog,
     props:{
@@ -308,6 +311,10 @@ yarn add prop-types
 ###生命周期函数(钩子函数)
 
 * 描述一个组件或者程序从创建到销毁的过程,我们可以再过程中基于钩子函数完成一些自己的操作
+
+* [生命周期](https://www.cnblogs.com/gdsblog/p/7348375.html)
+
+* ![1550495421327](react.assets/1550495421327.png)
 
   ```js
   基本流程
@@ -1289,6 +1296,440 @@ export default store;
 ### Ant Desion UI框架
 
 > yarn add antd;
+
+### 复习
+
+```js
+{React.createElement('a',{href:'http://www.baidu.com'},'Hello')}
+//标签  属性   子元素
+class HelloMessage extends Component{
+    render(){
+        let child=React.createElement('li',{className:'ddd'},'我是子页面');
+        return <div>Hello {this.props.name}
+            {React.createElement('a',{href:'http://www.baidu.com'},'Hello')}
+            <br/>
+            {React.createElement('ul',{className:'ccc'},child
+                )}
+        </div>
+    }
+}
+style 属性应该由CSS属性构成的JS对象
+* className=''
+* style={{}}   //内联报 key错误  zIndex  多峰命名
+
+props 属性
+state  组件的状态  可以通过 this.setState进行更改
+
+无状态组件
+const Hellos = (props) => <div>Hello {props.name}</div>;
+<Hellos name={'zhangsan'}/>
+有状态组件
+//定义一个时间的方法,挂载前开始定时器执行这个方法,卸载后清除挂载前的那个定时器方法
+export default class LikeButton extends React.Component {
+    constructor(props) {
+        super(props);
+        //初始化状态
+        this.state = {
+            data: new Date()
+        }
+    };
+    componentDidMount(){
+        this.timerId=setInterval(
+            ()=>this.tick()
+        )
+    }
+    //方法
+    tick(){
+        this.setState({
+            data:new Date()
+        })
+    }
+    componentWillUnmount(){
+        clearInterval(this.timerId);
+    }
+    render() {
+        return <div>
+            <h3>{this.state.data.toLocaleTimeString()}</h3>
+        </div>
+    }
+}
+
+props 对于使用他的组件来说是只读的,只能通过父组件进行修改
+state  可以通过 this.setState({  }) 进行修改
+注意不要在push pop shift unshift  splice 等方法修改
+应该用concat  slice   filter  会放回一个新数组
+
+原生事件
+可以再componentDidMount方法中通过addEventListener 绑定浏览器原生事件
+componentWillUnmount 方法解除 removeEventListener
+
+在dom 中 设置 ref属性指定一个名称    通过 this.refs.指定名称获取
+
+组合组件
+
+父组件 <Avatar username="pwh" />
+    
+const Avatar = (props) => {
+  return (
+    <div>
+      //子组件   通过属性传递
+      <ProfilePic username={props.username} />
+      <ProfileLink username={props.username} />
+    </div>
+  );
+}
+
+循环的时候必须要给key
+// arr是在父组件里面声明的arr数组的属性
+<ul>{this.props.arr.map((v,i)=>{
+                return <li key={i}>{v}</li>
+            })}</ul>
+组件标签里面包含的子元素通过 this.props.children
+
+<LikeButton username={'pwh'} arr={[1,2,3,4]}>
+        <span>12123</span>
+        <p>我是一个p标签</p>
+    </LikeButton>
+props.children通常是一个组件对象的数组,当 props.children是唯一的子元素,那就不是数组
+
+点击事件的内联样式
+onClick={()=>(console.log(1))}
+第二种方法
+onClick={this.handleClick}  //记得不要再这里带(e)参数 会报错的
+<div onClick={this.handleClick.bind(this)}>${this.props.name}</div>
+handleClick=(e)=>{
+        console.log(e.target.innerHTML);
+    };
+```
+
+> ```js
+> store有四个方法。
+> getState： 获取应用当前 state。
+> subscribe：添加监听器。
+> dispatch：分发 action。更新 state。
+> replaceReducer：替换 store 当前用来处理 state 的 reducer。
+> 
+> 两者的关系是: state=store.getState()
+> 
+> 常用的是dispatch，这是修改State的唯一途径，使用起来也非常简单。
+> import {createState} from 'redux';
+> function counter(state=0,action) {
+>     switch(action.type){
+>         case 'INCREMENT':
+>             return state + 1;
+>         case 'DECREMENT':
+>             return state-1
+>         default:
+>             return state
+>     }
+> }
+> let store=createState(counter);
+> store.subscribe(()=>{
+>     console.log(store.getState());
+> });
+> store.dispatch({type:"INCREMENT"});
+> 
+> action 唯一的约束仅仅就是包含一个type
+> ```
+>
+> ```js
+> 
+>     store由redux的createStore(reducer)生成的
+> 
+>     state通过store.getState()获取的
+> 
+>     action本质上是一个包含type属性的普通对象
+> 
+>     改变 state必须dispatch一个action
+> 
+>     reducer 本质上action.type  来更新的
+> 
+> 实际上state就是所有reducer返回的汇总
+> 
+> redux有五个API
+> 	createStore(reducer,[])
+> 	combineReducers(reducers)
+> 	applyMiddleware(...middlewares)
+> 	bindActionCreators(actionCreatore,dispatch)
+> 	compose(...functions)
+> 
+> Redux 强调三大基本原则
+> * 唯一数据源
+> * 保持状态只读
+> * 数据改变只能通过纯函数完成
+> ```
+>
+> **过程总结**
+>
+> > **创建一个操作指令action ->创建一个reducer -> 通过createStore(reducer) 创建一个store**
+> >
+> > **通过store   dispath(action) 执行reducer 中更新操作,更新store中的数据**
+>
+> ![1551111236470](react.assets/1551111236470.png)
+>
+> 学习redux
+>
+> 我们大多数人的学习过程一般是——一个循序渐进、逐步迭代的过程，而redux的学习却不是这样，你不看概念，就没法理解示例demo，你不敲示例demo，你就无法完全理解redux的各种基础概念。所以最终发现，redux的最好的学习方式就是，通读一个个的概念，敲出示例demo，再根据示例demo，反过来理解概念，循环往复，总能学的懂！！
+> --------------------- 
+>
+> ```js
+> const todo={
+>     TOGGLE_TODO:'TOGGLE_TODO',
+>     GET_TODOS:'GET_TODOS',
+>     toggleTodo({ items,id }) {
+>         return {
+>             type: todo.TOGGLE_TODO,
+>             items:items,
+>             id:id
+>         }
+>     },
+>     getTodos({items}){
+>         return {
+>             type:todo.GET_TODOS,
+>             items:items
+>         }
+>     }
+> };
+> export default todo;
+> 
+> // ======
+> 
+> export default function(state = {默认值}, action) {
+>     switch(action.type){
+>         case GET_TODOS:
+>             return {todos:[...action.items]}
+>         case TOGGLE_TODO://deleted=true
+>             return {
+>                 todos:action.items.map((i)=>{
+>                     if(i.id===action.id){
+>                         return {
+>                             ...i,
+>                             status:i.status===0?1:0
+>                         }
+>                     }else{
+>                         return {
+>                             ...i
+>                         }
+>                     }
+>                 })
+>             }
+>         default:
+>             return state;
+>     }
+> }
+> 
+> const store = createStore(todo);
+> ```
+>
+> 
+
+###redux-hook
+
+### dva.js
+
+> `npm install dva-cli -g`
+>
+> [入门文档](https://www.jianshu.com/p/8f15f68f2505)
+>
+> put  用于触发action  `put({type:types.ADD})`
+>
+> call  用于调用异步逻辑,支持promise
+>
+> call(第一个参数是一个方法,第二个是传入这个方法的参数)
+>
+> take 等待dispatch 匹配某个action
+>
+> yield 方法(传入方法的参数)  //跟上面等同
+>
+> run() 方法是添加功能  * yield
+>
+> effect 都是一个简单对象
+>
+> select  用于从state里获取数据
+>
+> ```js
+> 定义路由
+> 
+> router/Products.js
+> 
+> import React from 'react';
+> 
+> const Products = (props) => (
+>   <h2>List of Products</h2>
+> );
+> 
+> export default Products;
+> 
+> 添加路由
+> router.js
+> <Route path='/products' exact component={Products}/>
+> ```
+>
+> ```js
+> 编写组件
+> 
+> components/编写组件.js
+> 
+> 定义Model
+> model/..js
+>     export default {
+>       namespace:'count',
+>       state:0,
+>       reducers:{
+>         add(count){return count+1},
+>         minus(count){return count-1}
+>       }
+>     }
+> 在indexjs 载入
+>     app.model(require('./models/products').default);
+> 
+> function IndexPage(props) {
+>   return (
+>     <div>
+>       <h3>      {props.count}</h3>
+>       <button key={'add'} onClick={()=>{props.dispatch({type:'count/add'})}}>+</button>
+>       <button key={'munus'} onClick={()=>{props.dispatch({type:'count/minus'})}}>-</button>
+>     </div>
+>   );
+> }
+> 
+> IndexPage.propTypes = {};
+> 
+> export default connect(({count}) => ({count}))(IndexPage);
+> ```
+>
+> react     react-redux    react-saga
+>
+> react-sage是更好的处理异步
+>
+> [dva科普](https://blog.csdn.net/SCU_Cindy/article/details/82432971)
+>
+> ```js
+> function* g1() {
+>   yield 2;
+>   yield 3;
+>   yield 4;
+> }
+> 
+> function* g2() {
+>   yield 1;
+>   yield* g1();
+>   yield 5;
+> }
+> 
+> var iterator = g2();
+> 
+> console.log(iterator.next()); // { value: 1, done: false }
+> console.log(iterator.next()); // { value: 2, done: false }
+> console.log(iterator.next()); // { value: 3, done: false }
+> console.log(iterator.next()); // { value: 4, done: false }
+> console.log(iterator.next()); // { value: 5, done: false }
+> console.log(iterator.next()); // { value: undefined, done: true }
+>  yield* 表达式用于委托给另一个generator 或可迭代对象。
+> ```
+>
+>  yarn add roadhog
+>
+> ### UMI.js
+>
+> > 全局安装umi     cnpm  install -g umi 
+> >
+> > 路径似路由
+> >
+> > umi div    执行
+> >
+> >  `umi g` 创建一些页面 
+> >
+> > ```
+> > umi g page index    是根路径
+> > 创建 umi 项目
+> > yarn create 项目名
+> > ```
+>
+> ```js
+> import React from 'react'
+> import dva from 'dva'
+> import Counter from './Counter'
+> 
+> //dva 是一个函数 通过执行它可以拿到一个app 对象
+> let app = dva();
+> 
+> // function delay(ms) {
+> //     return new Promise(function (resolve, reject) {
+> //         setTimeout(function () {
+> //             resolve()
+> //         }, ms)
+> //     })
+> // }
+> //
+> // function getAmount() {
+> //     return fetch('http://localhost:3000/amount').then(res => res.json());
+> // }
+> 
+> //app.router app.start() app.model
+> //一个模板就是一个状态,然后把reducer和状态写在一起
+> //添加一个模型
+> app.model({
+>   //命名空间: 因为一个应用会有很多个模型,每一个模型有一个对象
+>   namespace: 'counter',
+>   //此命名空间的默认状态
+>   state: {current: 0, height: 0},
+>   //他是用来接收action ,修改仓库状态
+>   reducers: {
+>     //reducer接受老状态和动作,返回新状态
+>     //state老状态(parameter) action:AnyAction
+>     add(state, action) {
+>       // let current = state.current + action.payload;
+>       // return {current, height: current > state.height ? current : state.height}
+>       return {current: state.current + 1}
+>     },
+>     // minus(state, action) {
+>     //     return {...state, current: state.current - action.payload}
+>     // }
+>   },
+>   //它是用来执行副作用的,比如说异步操作,调用api接口
+>   effects: {
+>     //表示这是一个generator effect=redux-saga/effects
+>     // * add(action, {call, put}) {
+>     //     //表示这是一个generator
+>     //     //amount  是接口中的变量  call 调用方法
+>     //     let {amount}=yield call(getAmount);
+>     //     //type;'方法'
+>     //     yield put({type:'add',payload:amount})
+>     //     // yield call(delay, 1000);
+>     //     // yield put({type: 'minus'})//可以不加前缀,counter/minus/派发其他的可以写
+>     // }
+>   },
+> });
+> //参数是一个函数,此应用本身就是要熏染函数的返回值
+> app.router(() => <Counter />);
+> //本质是启动应用,就是通过app.router获取组件,通过ReactDOM渲染到容器上
+> app.start('#root');
+> 
+> import React from 'react';
+> import {connect} from 'dva';
+> import './Counter.css';
+> 
+> class Counter extends React.Component {
+>     render() {
+>         return (<div>
+>             <div className={'container'}>
+>                 <p>当前记录{this.props.current}</p>
+>                 <button onClick={() => this.props.dispatch({type: 'counter/add'})}>add</button>
+>             </div>
+>         </div>)
+>     }
+> }
+> 
+> export default connect(
+>     state => state.counter
+> )(Counter);
+> 
+> ```
+>
+> 
+
+
 
 
 
