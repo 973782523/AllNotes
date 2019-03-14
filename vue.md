@@ -240,6 +240,7 @@ mounted(){//ref 如果放在组件上,获取的是组建的实例,并不是组�
 
 向子组件传送数据是通过props实现的
      <foo-component :foo-message="fooMessage"></foo-component>
+        fooMessage  是父组件的变量
      /*type  能够指定的类型
         String Number Boolean Function Object Array Symbol
         required 声明这个参数是否必须传入
@@ -324,7 +325,28 @@ $emit
                 this.counter++
             }
         }
-        
+
+--------
+    父组件
+<custom @childByValue="childByValue"/>
+ childByValue(childValue){
+        console.log(childValue);
+      }
+	子组件
+<button @click.self="childClick">点我触发</button>
+ childClick(){
+      this.$emit('childByValue',this.childValue)
+     //第一个参数是 @父组件的方法,第二个参数是本组件的数据
+      }   
+//非组件的传值   
+ 注册一个空vue
+ 对象.$emit()
+mounted(){
+    对象.$on('方法',function(传的参数))
+}
+不建议,太复杂的建议用vuex
+
+           
 vue 消息订阅与发布
 
 缓存路由
@@ -341,6 +363,45 @@ this.$router.replace(path):用新路由替换当前路由(不可以返回到当�
 this.$router.back() 请求(返回)上一个记录路由
 this.$router.go(-1) 请求返回上一个记录路由
 ```
+
+### 动态组件
+
+```js
+vue 中 <component> 用 :is 来挂载不同的组件
+
+   <component :is="currentView"></component>
+  <button @click="handleChangeView('A')">A</button>
+  <button @click="handleChangeView('B')">B</button>
+   <button @click="handleChangeView('C')">C</button>
+
+components:{
+                comA:{
+                    template:`
+                        <div>组件A</div>
+                    `
+                },
+                comB:{
+                    template:`
+                        <div>组件B</div>
+                    `
+                },
+                comC:{
+                    template:`
+                        <div>组件C</div>
+                    `
+                }
+            },
+            data:{
+                currentView:'comA'
+            },
+            methods:{
+                handleChangeView:function(component){
+                    this.currentView='com'+component;
+                }
+            }
+```
+
+
 
 向路由组件传递数据和编程式路由导航
 
@@ -1086,7 +1147,7 @@ this.$router.push({path:'register',query:{plan:'private'}})
 > * data 没有
 > * 事件没有初始化
 >
-> create
+> created
 >
 > * el 没有
 > * data 数据有了
@@ -1113,3 +1174,199 @@ this.$router.push({path:'register',query:{plan:'private'}})
 VueRouter的实现原理:是通过监听a标签的描点值,来动态的显示页面的值
 
 #### proxyTable
+
+### v-model.lazy
+
+> 同步输出    简称  防抖
+>
+> v-model.number  规定输出的数字
+>
+> v-model.trim  去除空格
+
+### [vue 项目问题](https://juejin.im/post/58c0e882da2f60186d6d4818#heading-4)
+
+> **v-if 解决异步传参组件**
+>
+> ```js
+> ` <mapBox v-if="mapData" :data="mapData"></mapBox>`
+> 
+> 点击搜索的时候
+> 
+> let This=this
+> this.mapData=false; //重要
+> this.$http.post('/api/show..',{参数}).then(
+> response=>this.mapData=response.data;
+> )
+> ```
+>
+> 还有一些强制刷新的
+>
+> `$forceUpdate()`
+>
+> ```js
+> this.$nextTick(()=>{
+>     
+> })
+> this.$set()
+> ```
+>
+> **使用$refs调用子组件的方法**
+>
+> ```js
+> <Tree  ref="Tree"></Tree>
+> let rules = this.$refs.Tree.方法
+> ```
+>
+> setTimeout
+>
+> $set()
+>
+> ### 组件递归实现多级菜单
+>
+> ```js
+> 父组件
+> `
+>   <div>
+>     <Items :msg="msg"></Items>
+>   </div>
+>  data () {
+>       return {
+>         msg: [{
+>           text: 1,
+>           next: [{
+>             text: '1-1',
+>             next: [{
+>               text: '1-1-1',
+>               next: [{
+>                 text: '1-1-1-1',
+>               }],
+>             }],
+>           }, {
+>             text: '1-2', //1-2写在这儿，第二层数据数组中的a[1].text就是‘1-2’
+>           }],
+>         }, {
+>           text: 2,
+> 
+>         }, {
+>           text: 3,
+> 
+>         }],
+>       }
+>     },
+>     components: {
+>       Items,
+> 
+>     },
+> `
+> 子组件
+>   <ul >
+>       <li v-for='(a,index) in msg' @click.stop.self='show=!show' :key="index">
+>         {{a.text}}
+>         <Items :msg='a.next' v-if='show' ></Items>
+>       </li>
+>     </ul>
+>   export default {
+>     name:'Items', //这个必须写
+>     props:['msg'],// 父组件传到子组件的数据
+>     data(){
+>       return {
+>         show:false
+>       }
+>     }
+>   }
+> ```
+>
+> **使用watch监听路由参数重新获取数据**
+>
+> [方法](https://www.cnblogs.com/crazycode2/p/8727410.html)
+>
+> ```js
+> // 监听,当路由发生变化的时候执行
+> watch: {
+>   '$route':'getPath'
+> },
+> methods: {
+>   getPath(){
+>     console.log(this.$route.path);
+>   }
+> }
+> 
+> Vue 为你提供了一种方式来声明“这两个元素是完全独立的——不要复用它们”。只需添加一个具有唯一值的 key 属性
+> <router-view :key="key"></router-view>
+>  
+> computed: {
+>   key() {
+>     return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
+>   }
+> }
+> ```
+>
+
+###Vue.js 内置的通信手段一般有两种：
+
+- ref：给元素或组件注册引用信息；
+
+- `$parent` / `$children`：访问父 / 子实例。
+
+- ```js
+  this.$parent.属性或者方法
+  this.$children[0].属性或者方法
+  ```
+
+### vue 组件传值provide/inject
+
+```js
+以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效
+跟react 上下文特性相似
+// A.vue  父组件
+export default {
+  provide: {
+    name: 'Aresn'
+  }
+}
+
+// B.vue  子组件
+export default {
+  inject: ['name'],
+  mounted () {
+    console.log(this.name);  // Aresn
+  }
+}
+```
+
+### 实例还暴露了一些有用的实例属性与方法。它们都有前缀 `### ，以便与用户定义的属性区分开 
+
+### 通过$event 访问原始DOM事件
+
+```js
+<button @click.self='warn($event)'>点击我</button>
+methods:{
+    warn(event){
+        event.target.innerHTML
+    }
+}
+```
+
+### prevent是拦截默认事件
+
+```js
+@click.prevent.self  会阻止所有的点击
+@click.self.prevent  只会阻止对元素自身的点击
+```
+
+### 按键修饰符
+
+```js
+@keyup.enter="submit"
+.enter
+.tab
+.delete (捕获“删除”和“退格”键)
+.esc
+.space
+.up
+.down
+.left
+.right
+```
+
+###根实例可以通过 `$root` 属性进行访问 

@@ -1315,7 +1315,24 @@ class HelloMessage extends Component{
 }
 style 属性应该由CSS属性构成的JS对象
 * className=''
-* style={{}}   //内联报 key错误  zIndex  多峰命名
+* style={{fontSize:50,backgroundColor:'red'}}   // zIndex  多峰命名
+let styles={
+        fontSize:50,
+        fontWeight: 'bold',
+        backgroundColor: 'red',
+      };
+{{styles}}
+
+模拟 if
+{this.state.tags.length === 0 && '等于0'}     //A为真返回B
+   renderTags(){
+      if(this.state.tags.length===0) return <p>里面没有元素</p>
+      return  <ul>
+        {this.state.tags.map((tag,index)=><li key={index}>{tag}</li>)}
+        <hr />
+      </ul>
+    }
+{this.renderTags()}
 
 props 属性
 state  组件的状态  可以通过 this.setState进行更改
@@ -1393,13 +1410,18 @@ const Avatar = (props) => {
 props.children通常是一个组件对象的数组,当 props.children是唯一的子元素,那就不是数组
 
 点击事件的内联样式
-onClick={()=>(console.log(1))}
+onClick={  ()=>(console.log(1))}
 第二种方法
 onClick={this.handleClick}  //记得不要再这里带(e)参数 会报错的
 <div onClick={this.handleClick.bind(this)}>${this.props.name}</div>
 handleClick=(e)=>{
         console.log(e.target.innerHTML);
-    };
+    };   //函数建议使用箭头函数的写法
+
+通过  setState来修改state 
+this.setState({
+      count: this.state.count+1
+    })
 ```
 
 > ```js

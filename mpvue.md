@@ -41,6 +41,8 @@ webstorm 跳转到哪一行ctrl+G
 >
 > App.vue没有template标签
 >
+> 长按`@longpress`
+>
 > main.js里面
 >
 > ```js
@@ -62,7 +64,27 @@ webstorm 跳转到哪一行ctrl+G
 
 > import Notify from '@/static/...'   //@ 是mpvue指向src目录
 >
+> 记住 新创建的页面要记得 重新yarn start
+>
 > "^pages/add/add"   页面前带有^符号会自动编辑成首页
+>
+> 组件中的main.js
+>
+> ```js
+> import Vue from 'vue'
+> import App from './index'
+> 
+> const app = new Vue(App)
+> app.$mount();
+> export default {
+>   config:{
+> 
+>   }
+> }
+> 
+> ```
+>
+> 
 
 ### 配置sass
 
@@ -127,4 +149,26 @@ npm i sass-loader -D / npm i node-sass -D
 > 将 component 字段设为 true 可这一组文件设为自定义组件
 > ```
 >
-> 
+> 小程序不用a标签的跳转(注意在导航栏使用了就不能用a链接跳转了)解决方法使用 switchTab
+>
+> ```
+> <a href="/pages/index/main" open-type="switchTab">回到首页</a>
+> ```
+>
+> ```js
+> <div class="my" @click="toMy"></div>
+> //页面的深度不超过5层  如果用wx.redirectTO就可以解决
+> methods:{
+>     toMy(){
+>         wx.redirectTo({
+>             url:'/pages/my/main'
+>         })
+>     }
+> }
+> ```
+>
+> 禁止页面下拉(会出现白条)在最下面添加禁止
+>
+> ![1551628180027](mpvue.assets/1551628180027.png)
+>
+> input 标签的name 属性  通过    e.detail.value.xxx 获取
