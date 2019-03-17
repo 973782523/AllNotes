@@ -1,3 +1,5 @@
+###
+
 ###[webstrom自动格式化代码](https://segmentfault.com/q/1010000014002641?sort=created)
 
 命令
@@ -14,7 +16,7 @@ npm root -g
 
 文件
 
-```
+```js
 public 存放的是当前项目的HTML页面(单页面应用放index.html即可)
 html 导入的地址应该写成绝对路径  %PUBLIC_URL%   public的文件夹
 	不能用相对路径
@@ -95,7 +97,7 @@ less类似一样的
 
 撤销工作区的修改
 
-`已修改，未暂存（撤销工作区的修改）
+`已修改，未暂存（撤销工作区的修改）`
 
 ```
 git reset --hard
@@ -987,7 +989,7 @@ Redex工程化案例
 
 [todo](file:\H:\珠峰\2018年第二期源码、笔记\2018年第二期源码、笔记\WEEK12\day2)实例
 
-###单页面应用(SPA)多页面应用(MPA)
+### 单页面应用(SPA)多页面应用(MPA)
 
 * 多页面应用(MPA)
 
@@ -1750,6 +1752,34 @@ this.setState({
 > ```
 >
 > 
+
+```js
+    ////把redux容器中的状态信息遍历,赋值给当前组件的属性(state)
+    let mapStateToProps=state=>{
+        //state就是redux容器中状态信息
+        //我们返回的是啥,就把它挂载到当前组件的属性上(redux存储很多信息,我们想用啥就返回啥即可)
+        return {
+            ...state.vote
+        }
+
+    };
+    //把redux的dispatch 派发行为遍历,也复制给组件的属性(ActionCreator)
+    let mapDispatchToProps=dispatch=>{
+        //dispatch:store中存储的dispatch方法
+        //返回的是啥,就想当于把啥挂载到组件的属性上(一般我们挂载一些方法,这
+        // 些方法完成dispatch派发信息
+        return {
+            init(initData) {
+                dispatch(action.vote.init(initData));
+            }
+        }
+    };
+    export default connect([mapStateToProps],[mapDispatchToProps])(VoteBase)
+    =======================
+    export default connect({state=>({...state.vote})},action.vote)(VoteBase)
+    react-redux把action-creator中编写方法(返回action对象的方法),自动构造dispatch派发任务的方法,也就是mapDispatchToProps这种格式把redux容器中的状态信息遍历,赋值给当前组件的属性(state)
+
+```
 
 
 

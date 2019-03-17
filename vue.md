@@ -770,6 +770,73 @@ export default new Vuex.Store({
 })
 ```
 
+### vuex中的modules
+
+```js
+目录结构
+─ store
+    ├── index.js          # 我们组装模块并导出 store 的地方
+    ├── actions.js        # 根级别的 action
+    ├── mutations.js      # 根级别的 mutation
+    └── modules
+        ├── cart.js       # 购物车模块
+        └── products.js   # 产品模块
+        
+
+store/index.js
+
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+import login from './modules/login'
+export default new Vuex.Store({
+  modules:{
+    login
+  }
+})
+
+=====
+store/modules/login.js
+
+const state = {
+  useName: "sam"
+};
+const mutations = {
+
+};
+const actions = {
+
+};
+const getters = {
+
+};
+
+// 不要忘记把state, mutations等暴露出去。
+export default {
+  namespaced: true,  //单词别写错了,记得一定要设置呀
+  state,
+  mutations,
+  actions,
+  getters
+}
+
+使用
+         ...mapState('login',{
+          useName:state=>state.useName
+        })
+		...mapGetters("login", ["localJobTitle"])
+        ...mapState({
+          useName:state=>state.login.useName
+        })
+		...mapActions('login', ['alertName'])
+		...mapGetters({useName:'login/useName'})// 避免重名可以这样写
+		this.$store.dispatch("login/alertName")
+```
+
+
+
 > 客户端的路由实现方式两种:基于hash和HTML5 history api
 >
 > vue-router其本质就是:建立并管理url和对应组件之间的映射关系
@@ -1370,3 +1437,21 @@ methods:{
 ```
 
 ###根实例可以通过 `$root` 属性进行访问 
+
+### @click.native
+
+```js
+监听根元素的原生事件，使用 .native 修饰符
+```
+
+### 如何在引用的外部js文件中获取vue页面实例
+
+```js
+import houseColumn from '地址'
+created(){
+    this.houseColumn=houseColumn(this)
+}
+```
+
+
+
