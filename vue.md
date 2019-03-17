@@ -1442,6 +1442,8 @@ methods:{
 
 ```js
 监听根元素的原生事件，使用 .native 修饰符
+是用来修饰点击组件的 @click.native
+使用.native修饰符来操作普通HTML标签是会令事件失效的
 ```
 
 ### 如何在引用的外部js文件中获取vue页面实例
@@ -1453,5 +1455,19 @@ created(){
 }
 ```
 
+### .stop  阻止事件冒泡
 
+### .prevent 阻止事件的默认行为
+
+```js
+@submit.prevent=''   提交时间不在重载页面
+```
+
+### .once  只有一次
+
+**passive**
+
+>  移动端的 onscroll 事件整了一个 .lazy修饰符
+>
+> @scroll.passive=""
 
