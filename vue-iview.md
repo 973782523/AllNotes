@@ -45,5 +45,32 @@ Vue.component('i-switch', Switch)
 不用Switch  使用i-switch标签
 ```
 
+### 根据当前路由自动选中对应的菜单
+
+```js
+    <Menu :active-name="activeName">
+      <MenuItem name="/home" to="/home">Home</MenuItem>
+      <MenuItem name="/about" to="/about">About</MenuItem>
+    </Menu>
+      <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import {mapState, mapActions} from 'vuex'
+
+  export default {
+    data(){
+      return{
+        activeName:this.$route.path
+      }
+    },
+    watch:{
+      '$route'(){
+        this.activeName=this.$route.path
+      }
+    },
+```
+
 
 

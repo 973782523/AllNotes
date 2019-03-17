@@ -946,6 +946,8 @@ import User from '@/components/User' //这里可以省略.vue
 			name:'Page',
 			component:resolve => require(['@/components/Page'],resolve)
 			//此时component则不需要在第一步import}
+           // 把组件按组分块
+            component:() => import(/* webpackChunkName: "group-foo" */ './Foo.vue')
 ```
 
 如果打包报错,就把
