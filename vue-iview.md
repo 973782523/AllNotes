@@ -72,5 +72,37 @@ Vue.component('i-switch', Switch)
     },
 ```
 
+```js
+Switch: i-switch
+Circle: i-circle   使用这两个要用后面的不然报错
+```
 
+Col要是里面没有写内容,需要写个div占位
+
+![1552923281033](vue-iview.assets/1552923281033.png)
+
+深度选择器   
+
+```js
+.a >>> .b      //css
+/deep/ .a{}    //scss
+```
+
+```js
+不要再computed  中使用ajax 请求
+$watch  deep:true  深度监控
+watch 第一次绑定时是不会执行的, 加上这个 immediate: true 就可以了
+this.$parent.fight('xxx')// 子组件触发
+fught(res){
+    res
+}
+通过props 从父组件传入的数据
+//可以通过  computed 进行操作
+props: ['oldData'], // 非对象或数组类型
+computed: {
+  newData () {
+    return this.oldData.trim().toLowerCase()
+  }
+}
+```
 

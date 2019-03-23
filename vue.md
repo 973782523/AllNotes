@@ -1473,3 +1473,64 @@ created(){
 >
 > @scroll.passive=""
 
+### qs 
+
+```js
+ 进行传参格式化
+```
+
+### slot 插槽的深入理解
+
+```js
+父组件
+<template>
+    <div>
+      <child>
+        <div slot='zhangsan'>
+          {{msg}} <br>
+          <ul>
+            <li v-for="(i,index) of arr" :key="index">{{i}}</li>
+          </ul>
+        </div>
+      </child>
+    </div>
+</template>
+  export default {
+      components:{
+        child,
+      },
+      data(){
+        return {
+          msg:'111',
+          arr:[1,2,3,4,5,6]
+        }
+      }
+子组件
+      <slot name='zhangsan'></slot>
+```
+
+作用域插槽
+
+```js
+先从子组件触发
+<slot :data="data1"></slot>
+data(){
+    return {
+        data1: ['zhangsan','lisi','wanwu','zhaoliu','tianqi','xiaoba']
+    }
+}
+父组件
+<template slot-scope="{data}">
+          <li v-for="item in data">{{item}}</li>
+ </template>
+```
+
+**vue更新后生命周期被$nextTick替代**
+
+### $set
+
+```js
+this.$set(this.stu,'gender','male') //添加一个属性
+this.stu=Object.assign({},this.stu, { genders: 'female', height: 180 })//添加多个属性
+```
+
